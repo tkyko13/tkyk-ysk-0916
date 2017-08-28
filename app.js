@@ -3,7 +3,7 @@ const app = express();
 // const fs = require('fs');
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-var fs = require("fs");
+const fs = require("fs");
 
 const port = process.env.PORT || 8000;
  
@@ -13,7 +13,11 @@ app.get("/mess", function(req, res) {
 	console.log(req.query);
 	io.emit("mess", req.query);
 
-	fs.appendFile('log.txt', req.query ,'utf8', function (err) {
+	// ログをファイルに残す
+	var logText = "";
+	logText += "hoge" + ",";
+	logText += req.query.m + "\n";
+	fs.appendFile('log.txt', logText, 'utf8', function (err) {
 	    console.log(err);
 	});
 });
@@ -22,6 +26,11 @@ app.get("/mess", function(req, res) {
 // クライアントからio接続イベント
 io.on('connection', function(client){
 	console.log("connecting!");
+
+	// ログから過去のデータをクライアントに送信
+	var logFile = fs.readFileSync('log.txt', 'utf-8');
+	console.log(logFile);
+
 });
 
 
