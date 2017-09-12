@@ -24,6 +24,15 @@ function onResize(e) {
 	// Canvas要素の大きさを画面幅・高さに合わせる
 	stage.canvas.width = w;
 	stage.canvas.height = h;
+	if(backBmp) {
+		backBmp.regX = backBmp.image.width/2;
+		backBmp.regY = backBmp.image.height/2;
+		backBmp.x = window.innerWidth/2;
+		backBmp.y = window.innerHeight/2;
+		var ratio = window.innerWidth / backBmp.image.width;
+		backBmp.scaleX = ratio;
+		backBmp.scaleY = ratio;
+	}
 	// 画面更新する
 	stage.update();
 }
