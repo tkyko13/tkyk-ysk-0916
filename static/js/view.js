@@ -31,6 +31,8 @@ function onResize(e) {
 function onImgLoad(e) {
 	// 画像をステージに追加
 	backBmp = new createjs.Bitmap(e.target);
+	backBmp.reqX = backBmp.width/2;
+	backBmp.retY = backBmp.height/2;
 	var ratio = window.innerWidth / backBmp.image.width;
 	backBmp.scaleX = ratio;
 	backBmp.scaleY = ratio;

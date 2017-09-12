@@ -1,5 +1,5 @@
 class MsgFukidashi extends createjs.Container{
-    constructor() {
+    constructor(msg, type) {
         super();
 
         // 吹き出しグラフィックスと文字のマージン
@@ -12,12 +12,12 @@ class MsgFukidashi extends createjs.Container{
         this.maxWidth = 0;
         this.maxHeight = 0;
         // 全表示の改行までの文字数
-        const allWarapLen = 30;
+        const allWarapLen = 20;
         // 全表示の時間,ミリ秒
         const allViewTime = 3000;
 
-        var msg = randomStr(20, 50);
-        this.type = "left";// or firght
+        var msg = randomStr(20, 50);// msg
+        this.type = type;//"left" or right
 
         this._msgText = new createjs.Text("");
         var mt = this._msgText;
@@ -26,18 +26,29 @@ class MsgFukidashi extends createjs.Container{
 
         // テキストフィールド設定
         mt.text = breakLines(msg, allWarapLen);
-        // mt.x = -this.minWidth/2 - this.hMarg/2;
-        // mt.y = -this.minHeight - this.vMarg/2;
-
-        if(this.type == "left") {
-           mt.textAlign = "left";
-           mt.x = this.hMarg/2;
-           mt.y = -this.minHeight + this.vMarg/2;
-        }
         var tBox = mt.getBounds();
         // 全表示時の大きさ
         this.maxWidth = tBox.width + this.hMarg;
         this.maxHeight = tBox.height + this.vMarg;
+
+        // mt.x = -this.minWidth/2 - this.hMarg/2;
+        // mt.y = -this.minHeight - this.vMarg/2;
+        mt.alpha = 0;
+
+        if(this.type == "left") {
+            mt.textAlign = "left";
+            mt.x = this.hMarg/2;
+            // mt.y = -this.minHeight + this.vMarg/2;
+            mt.y = -this.maxHeight + this.vMarg/2 + 10;
+        }
+        else if(this.type == "right") {
+            mt.textAlign = "left";
+            // mt.x = -this.minWidth - this.hMarg/2;
+            mt.x = -this.maxWidth + this.hMarg/2;
+            // mt.y = -this.minHeight + this.vMarg/2;
+            mt.y = -this.maxHeight + this.vMarg/2 + 10;
+        }
+        
 
         // 吹き出しグラフィックス設定
         fs.graphics.beginFill("#FFFFFF");
@@ -51,6 +62,11 @@ class MsgFukidashi extends createjs.Container{
             fs.x = 0;
             fs.y = 0;
         }
+        else if(this.type == "right") {
+            fs.graphics.drawRoundRect(-this.minWidth, -this.minHeight, this.minWidth, this.minHeight, 5);
+            fs.x = 0;
+            fs.y = 0;
+        }
 
 
 
@@ -59,7 +75,7 @@ class MsgFukidashi extends createjs.Container{
         this.addChild(mt);
 
         // 初期アニメーション
-        this.popup();
+        // this.popup();
     }
 
     popup() {
@@ -69,27 +85,42 @@ class MsgFukidashi extends createjs.Container{
         var mt = this._msgText;
         var toX, toY, backX, backY;
         if(this.type == "left") {
-            toX = 0;//-this.maxWidth/2;
+            toX = 0;
             toY = -this.maxHeight;
             backX = 0;
-            backY = this.minHeight;
+            backY = -this.minHeight;
         }
+        else if(this.type == "right") {
+            toX = -this.maxWidth;
+            toY = -this.maxHeight;
+            backX = -this.minWidth;
+            backY = -this.minHeight;
+        }
+        
         createjs.Tween.get(mt)
-        .to({x:toX + t.hMarg/2, y:toY + t.vMarg/2}, 1000, createjs.Ease.bounceOut);
+        .wait(650)
+        .to({x:toX + t.hMarg/2, y:toY + t.vMarg/2, alpha:1}, 200);
+
 
         createjs.Tween.get(gComm)
-        .to({x:toX, y:toY, w:this.maxWidth, h:this.maxHeight}, 1000, createjs.Ease.bounceOut)
+        .to({x:toX, y:toY, w:this.maxWidth, h:this.maxHeight}, 800, createjs.Ease.bounceOut)
         .call(onComp);
 
         function onComp() {
-            createjs.Tween.get(gComm)
-            .wait(3000)
-            .to({x:backX, y:-backY, w:t.minWidth, h:t.minHeight}, 1000, createjs.Ease.bounceOut)
             
-            .call(handleComplete);
-            function handleComplete() {
+        //     createjs.Tween.get(mt)
+        //     .wait(3000)
+        // .   to({x:backX + t.hMarg/2, y:backY + t.vMarg/2}, 1000, createjs.Ease.bounceOut);
+
+
+        //     createjs.Tween.get(gComm)
+        //     .wait(3000)
+        //     .to({x:backX, y:backY, w:t.minWidth, h:t.minHeight}, 1000, createjs.Ease.bounceOut)
+            
+        //     .call(handleComplete);
+        //     function handleComplete() {
                 
-            }
+        //     }
         }
     }
 
