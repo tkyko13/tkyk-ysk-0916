@@ -19,6 +19,7 @@
   "homepage": "https://github.com/tkyko13/tkyk-ysk-0916#readme",
   "dependencies": {
     "express": "^4.15.4",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "sqlite3": "^3.1.9"
   }
 }

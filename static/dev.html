@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>dev</title>
+</head>
+<body>
+	<button id=logRemove>log remove</button>
+
+
+<script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+		
+	$('#logRemove').click(function(e){
+		console.log("aaa");
+		$.get("dev", {logRemove : 1});
+	});
+
+</script>
+</body>
+</html>

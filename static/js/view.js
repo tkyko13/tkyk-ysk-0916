@@ -1,13 +1,3 @@
-// $(window).on('load', function () {
-// 	var socket = io();
-
-// 	socket.on("mess", function(data){
-// 		console.log(data);
-// 		$('#test').append($('<li>').text(data.m));
-// 	});
-// });
-
-
 var stage;
 var backBmp;
 var msgContainer;
@@ -23,7 +13,7 @@ function init() {
     // 画像のロード
     var img = new Image();
 	img.onload = onImgLoad;
-	img.src = "../img/yabitu.jpg";
+	img.src = "../img/welcomeImg.png";
 }
 
 // リサイズ処理
@@ -54,7 +44,7 @@ function onImgLoad(e) {
 	socket = io();
 	// メッセージ受信
 	socket.on("mess", function(data){
-		console.log(data);
+		console.log("mess - "+data);
 
 		var t = createMsg(data.m, Math.random()*window.innerWidth, Math.random()*window.innerHeight);
 		msgContainer.addChild(t);
@@ -63,14 +53,12 @@ function onImgLoad(e) {
 	});
 
 	stage.update();
-
-	// createjs.Ticker.addEventListener("tick", tick);
 }
 
 function createMsg(msg, x, y) {
-	var margW = 2;
+	var margW = 5;
 
-	var t = new createjs.Text(msg, "36px sans-serif");
+	var t = new createjs.Text(msg, "24px sans-serif");
 	t.textAlign = "center";
 	t.textBaseline = "middle";
 	// t.font = "36px";
@@ -94,6 +82,40 @@ function createMsg(msg, x, y) {
 	return base;
 }
 
-// function tick(event) {
-// 	stage.update(event);
-// }
+
+
+function MsgContainer() {
+	var fukiArr = [];
+	this.Container_constructor();
+	this.addEventListener("tick", onEnterframe);
+    function onEnterframe(e) {
+
+    }
+
+}
+createjs.extend(MsgContainer, createjs.Container);
+createjs.promote(MsgContainer, "Container");
+
+function MsgFukidashi() {
+	this.Container_constructor();
+
+	this.width = 0;
+	this.height = 0;
+	this.alpha = 0;
+	createjs.Tween.get(this)
+	.wait(500)
+	.to({alpha:1, width:300, height:300}, 1000)
+	.call(handleComplete);
+    function handleComplete() {
+        //Tween complete
+    }
+
+	this.addEventListener("tick", onEnterframe);
+    function onEnterframe(e) {
+    	
+    }
+}
+createjs.extend(MsgFukidashi, createjs.Container);
+createjs.promote(MsgFukidashi, "Container");
+
+
