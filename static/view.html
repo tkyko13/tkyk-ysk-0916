@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
 	<title>viewer</title>
 	<!-- <style> body {padding: 0; margin: 0;} </style> -->
-	<style>
+	<style type="text/css">
         canvas#myCanvas {
             display: block;
             position: absolute;
@@ -14,6 +14,12 @@
             width: 100%;
             height: 100%;
         }
+    </style>
+    <style type="text/css">
+		@font-face{
+			font-family:'shin';
+			src:url('/font/G-OTF-GSHINMGOPRO-MEDIUM_0.OTF');
+		}
     </style>
 </head>
 <body bgcolor="#FFFFFF" onload="init();">
@@ -24,7 +30,12 @@
 
 <!-- <script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script> -->
 <script type="text/javascript" src="js/lib/socket.io.js"></script>
-<script type="text/javascript" src="js/lib/createjs.min.js"></script>
+<script type="text/javascript" src="js/lib/easeljs.min.js"></script>
+<script type="text/javascript" src="js/lib/tweenjs.min.js"></script>
+<script type="text/javascript" src="js/MsgFukidashi.js"></script>
+<script type="text/javascript" src="js/PenBtn.js"></script>
+<script type="text/javascript" src="js/BalloonBtn.js"></script>
+<script type="text/javascript" src="js/Balloon.js"></script>
 <script type="text/javascript" src="js/view.js"></script>
 </body>
 </html>

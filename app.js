@@ -9,15 +9,16 @@ const port = process.env.PORT || 8000;
 const logFilePath = 'log.txt';
 
  
+var balloonTotalNum = 0;
+
 app.use(express.static("./static"));
 
 // getでメッセージをもらう
 app.get("/mess", function(req, res) {
-	// console.log("query");
+	console.log("get query");
 	console.log(req.query);
-	resMsg(msgs[i], true);
+	resMsg(req.query.m, true);
 });
-
 
 // クライアントからio接続イベント
 io.on('connection', function(client){
@@ -32,6 +33,22 @@ io.on('connection', function(client){
 		// io.emit("mess", {m:msgs[i]});
 		resMsg(msgs[i], false);
 	}
+
+	// メッセージの受け取り
+	client.on('mess', function(data) {
+		console.log("socket mess");
+		console.log(data);
+
+		resMsg(data.m, true);
+	});
+
+	// 風船の受け取り
+	client.on('balloon', function(data) {
+		console.log("socket balloon");
+		console.log(data);
+
+		resBal(data.t, true);
+	});
 });
 
 function resMsg(msg, logFlg) {
@@ -49,6 +66,23 @@ function resMsg(msg, logFlg) {
 			}
 		});
 	}
+}
+
+function resBal(type, logFlg) {
+	// tというkeyにいれて送る
+	io.emit("balloon", {t:type});
+
+	// ログをファイルに残す
+	// if(logFlg) {
+	// 	var logText = "";
+	// 	// logText += "hoge" + ",";
+	// 	logText += msg + "\n";
+	// 	fs.appendFile(logFilePath, logText, 'utf8', function (err) {
+	// 	    if(err) {
+	// 	    	console.log(err);
+	// 		}
+	// 	});
+	// }
 }
 
 

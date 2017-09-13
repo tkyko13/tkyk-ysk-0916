@@ -1,10 +1,10 @@
 class MsgFukidashi extends createjs.Container{
-    constructor(msg, type) {
+    constructor(_msg, type) {
         super();
 
         // 吹き出しグラフィックスと文字のマージン
-        this.hMarg = 20;
-        this.vMarg = 20;
+        this.hMarg = 30;
+        this.vMarg = 30;
         // サマリー表示の文字数
         // const summaryLen = 20;
         this.minWidth = 60;
@@ -12,14 +12,17 @@ class MsgFukidashi extends createjs.Container{
         this.maxWidth = 0;
         this.maxHeight = 0;
         // 全表示の改行までの文字数
-        const allWarapLen = 20;
+        const allWarapLen = 10;
         // 全表示の時間,ミリ秒
         const allViewTime = 3000;
 
-        var msg = randomStr(20, 50);// msg
+        var msg = _msg;// randomStr(20, 50);// msg
         this.type = type;//"left" or right
 
-        this._msgText = new createjs.Text("");
+        // cssに記述ないといけない
+        this._msgText = new createjs.Text("", "20px shin");
+        // this._msgText = new createjs.Text("", "20px");
+        
         var mt = this._msgText;
         this._fukidashiShape = new createjs.Shape();
         var fs = this._fukidashiShape;
@@ -58,12 +61,12 @@ class MsgFukidashi extends createjs.Container{
         // fs.x = -tBox.width;
         // fs.y = tBox.height/2;
         if(this.type == "left") {
-            fs.graphics.drawRoundRect(0, -this.minHeight, this.minWidth, this.minHeight, 5);
+            fs.graphics.drawRoundRect(0, -this.minHeight, this.minWidth, this.minHeight, 18);
             fs.x = 0;
             fs.y = 0;
         }
         else if(this.type == "right") {
-            fs.graphics.drawRoundRect(-this.minWidth, -this.minHeight, this.minWidth, this.minHeight, 5);
+            fs.graphics.drawRoundRect(-this.minWidth, -this.minHeight, this.minWidth, this.minHeight, 18);
             fs.x = 0;
             fs.y = 0;
         }
