@@ -31,7 +31,7 @@ io.on('connection', function(client){
 	var msgs = logFile.split("\n");
 	for(var i=0; i<msgs.length; i++) {
 		// io.emit("mess", {m:msgs[i]});
-		resMsg(msgs[i], false);
+		resMsg(msgs[i], false, client);
 	}
 
 	// メッセージの受け取り
@@ -51,9 +51,14 @@ io.on('connection', function(client){
 	});
 });
 
-function resMsg(msg, logFlg) {
+function resMsg(msg, logFlg, client) {
 	// mというkeyにいれて送る
-	io.emit("mess", {m:msg});
+	if(client) {
+		client.emit("mess", {m:msg});
+	}
+	else {
+		io.emit("mess", {m:msg});
+	}
 
 	// ログをファイルに残す
 	if(logFlg) {
@@ -66,6 +71,8 @@ function resMsg(msg, logFlg) {
 			}
 		});
 	}
+
+
 }
 
 function resBal(type, logFlg) {
