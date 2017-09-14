@@ -18,6 +18,7 @@ app.get("/mess", function(req, res) {
 	console.log("get query");
 	console.log(req.query);
 	resMsg(req.query.m, true);
+	res.send("mess ok");
 });
 
 // getでバルーンをもらう
@@ -25,6 +26,7 @@ app.get("/balloon", function(req, res) {
 	console.log("get query");
 	console.log(req.query);
 	resBal(req.query.t, true);
+	res.send("balloon ok");
 });
 
 // クライアントからio接続イベント
