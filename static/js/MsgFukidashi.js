@@ -54,6 +54,7 @@ class MsgFukidashi extends createjs.Container{
         
 
         // 吹き出しグラフィックス設定
+        fs.alpha = 0.7;
         fs.graphics.beginFill("#FFFFFF");
         fs.graphics.beginStroke("#000000");
         // shape.graphics.drawRoundRect(-tBox.width/2, -tBox.height/2, tBox.width, tBox.height, 5);
@@ -103,7 +104,6 @@ class MsgFukidashi extends createjs.Container{
         createjs.Tween.get(mt)
         .wait(650)
         .to({x:toX + t.hMarg/2, y:toY + t.vMarg/2, alpha:1}, 200);
-
 
         createjs.Tween.get(gComm)
         .to({x:toX, y:toY, w:this.maxWidth, h:this.maxHeight}, 800, createjs.Ease.bounceOut)

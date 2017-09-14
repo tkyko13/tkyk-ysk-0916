@@ -3,6 +3,12 @@ class BalloonBtn extends createjs.Container {
         super();
 
         var _this = this;
+
+        this.mouseChildren = false;
+        var hit = new createjs.Shape();
+        hit.graphics.beginFill("#000").drawRect(-50, -50, 100, 100);
+        this.hitArea = hit;
+        
         var bitmap = new createjs.Bitmap("img/btn_balloon.png");
         bitmap.image.onload = imgLoaded;
         
