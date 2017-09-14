@@ -20,6 +20,13 @@ app.get("/mess", function(req, res) {
 	resMsg(req.query.m, true);
 });
 
+// getでバルーンをもらう
+app.get("/balloon", function(req, res) {
+	console.log("get query");
+	console.log(req.query);
+	resBal(req.query.t, true);
+});
+
 // クライアントからio接続イベント
 io.on('connection', function(client){
 	console.log("connecting!");
