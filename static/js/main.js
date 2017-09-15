@@ -58,29 +58,7 @@ function onImgLoad(e) {
 		console.log("mess data - ");
 		console.log(data);
 
-		if(data.m && data.m.length > 0) {
-			var x = Math.random() * stage.canvas.width * (1/ratio);
-	        var y = Math.random() * stage.canvas.height * (1/ratio);
-	        var type = "left";
-	        if(x > stage.canvas.width/2) {
-	            type = "right";
-	        }
-	        var fuki = new MsgFukidashi(data.m, type);
-	        fukis.push(fuki);
-	        fuki.x = x;
-	        fuki.y = y;
-	        msgContainer.addChild(fuki);
-	        fuki.popup();
-
-	        if(fukis.length > 50) {
-	            msgContainer.removeChild(fukis[0]);
-	            fukis.shift();
-	        }
-
-			// var t = createMsg(data.m, Math.random()*window.innerWidth, Math.random()*window.innerHeight);
-			// msgContainer.addChild(t);
-
-		}
+		popFukidashi(data.m);
 	});
 
 	// 風船受信
@@ -95,13 +73,63 @@ function onImgLoad(e) {
 
 	createjs.Ticker.addEventListener("tick", onEnterframe);
     function onEnterframe(e) {
+    	// if(Math.random() < 0.5) {
+    	// 	popFukidashi("aaaaaaaaaa");
+    	// }
         stage.update();
     }
 
 }
 
+function popFukidashi(msg) {
+	if(msg && msg.length > 0) {
+		var pos = getMsgPos();
+		var x = pos.x;//Math.random() * stage.canvas.width * (1/ratio);
+        var y = pos.y;//Math.random() * stage.canvas.height * (1/ratio);
+        var type = "left";
+        if(x > stage.canvas.width/2) {
+            type = "right";
+        }
+        var fuki = new MsgFukidashi(msg, type);
+        fukis.push(fuki);
+        fuki.x = x;
+        fuki.y = y;
+        msgContainer.addChild(fuki);
+        fuki.popup();
+
+        // if(fukis.length > 50) {
+        //     msgContainer.removeChild(fukis[0]);
+        //     fukis.shift();
+        // }
+
+		// var t = createMsg(data.m, Math.random()*window.innerWidth, Math.random()*window.innerHeight);
+		// msgContainer.addChild(t);
+	}
+}
+
+// var face = new createjs.Shape();
 function getMsgPos(fuki) {
-	
+	var ratioW = stage.canvas.width / backBmp.image.width;
+	var avoidArea = {x:0, y:280*ratio, w:650*ratioW, h:360*ratio};
+
+	// face.graphics.clear();
+	// face.graphics.beginFill("red");
+	// face.graphics.drawRect(avoidArea.x, avoidArea.y, avoidArea.w, avoidArea.h);
+	// stage.addChild(face);
+
+	var rx = Math.random()*stage.canvas.width;
+	var ry;
+	if(rx < avoidArea.w) {
+		ry = Math.random()*stage.canvas.height - avoidArea.h;
+		if(ry > avoidArea.y) {
+			ry += avoidArea.h;
+		}
+	}
+	else {
+		ry = Math.random()*stage.canvas.height;
+	}
+
+	return {x:rx * (1/ratio), y:ry * (1/ratio)};
 }
 
 // リサイズ処理
