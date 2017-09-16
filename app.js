@@ -122,10 +122,16 @@ app.get("/dev", function(req, res) {
 	
 
 	// ログをファイルを空にする
-	if(req.query.removeLog == 1) {
+	if(req.query.deleteLog == 1) {
 		fs.writeFile(logFilePath, "" , function (err) {
 		    console.log(err);
+		    res.send("delete ok");
 		});
+	}
+	// ログファイルの中身を取得
+	if(req.query.getLog == 1) {
+		var logFile = fs.readFileSync(logFilePath, 'utf-8');
+		res.send(logFile);
 	}
 });
 

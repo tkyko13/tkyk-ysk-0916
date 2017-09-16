@@ -4,15 +4,28 @@
 	<title>dev</title>
 </head>
 <body>
-	<button id=logRemove>log remove</button>
+	<button id=logRemove>Remove log</button>
+	<br>
+	<br>
+	<button id=getLog>Get log</button>
+	<textarea id=log></textarea>
 
 
 <script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 		
 	$('#logRemove').click(function(e){
-		console.log("aaa");
-		$.get("dev", {logRemove : 1});
+		$.get("dev", {deleteLog : 1}, function(data) {
+			alert(data);
+		});
+	});
+
+	$('#getLog').click(function(e){
+		$.get("dev", {getLog : 1}, function(data) {
+			console.log(data);
+			$('#log').val(data);
+		});
+
 	});
 
 </script>
