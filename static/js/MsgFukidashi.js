@@ -12,7 +12,7 @@ class MsgFukidashi extends createjs.Container{
         this.maxWidth = 0;
         this.maxHeight = 0;
         // 全表示の改行までの文字数
-        const allWarapLen = 10;
+        const allWarapLen = 15;
         // 全表示の時間,ミリ秒
         const allViewTime = 3000;
 
@@ -124,6 +124,7 @@ class MsgFukidashi extends createjs.Container{
         //     function handleComplete() {
                 
         //     }
+
         }
     }
 

@@ -21,7 +21,7 @@ class PenBtn extends createjs.Container {
 
         this.addEventListener("click", onClick);
         function onClick(e) {
-            // var input = window.prompt("入力してください", "初期入力文字");
+            // var input = window.prompt("Happy Wedding!!", "お祝いのメッセージをお願いします");
 
             // if(callback !=null) {
             //     callback(input);
@@ -29,10 +29,31 @@ class PenBtn extends createjs.Container {
             // if(input) {
             //    socket.emit('mess', {m:input});
             // }
-            var msgDev = document.getElementById("msgDev");
-            msgDev.style.visibility = "visible";
-            var msgTa = document.getElementById("msgTextarea");
-            msgTa.focus();
+
+            // var msgDev = document.getElementById("msgDev");
+            // msgDev.style.visibility = "visible";
+            // var msgTa = document.getElementById("msgTextarea");
+            // msgTa.focus();
+
+            $("#dialog").dialog({
+                modal: true,
+                buttons: {
+                    "OK": function() {
+                        $( this ).dialog("close");
+                        var input = $("#dialogText").val();
+                        if(input != "") {
+                            socket.emit('mess', {m:input});
+                        }
+                        
+                        $("#dialogText").val("");
+                    },
+                    "キャンセル": function() {
+                        $( this ).dialog("close");
+                        $("#dialogText").val("");
+                    }
+                }
+
+            });
         }
     }
 }

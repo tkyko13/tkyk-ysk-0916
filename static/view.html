@@ -1,41 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
-	<title>viewer</title>
-	<!-- <style> body {padding: 0; margin: 0;} </style> -->
-	<style type="text/css">
+    <title>Welcome!!</title>
+    <!-- <style> body {padding: 0; margin: 0;} </style> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+    <style type="text/css">
         canvas#myCanvas {
             display: block;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
+            
+            background-image: url("img/welcomeBoard.png");
+            background-size: cover;
+            background-position: center;
+        }
+        @font-face{
+            font-family:'shin';
+            src:url('/font/G-OTF-GSHINMGOPRO-MEDIUM_0.OTF');
+        }
+        dev#msgDev {
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
+            position: absolute;
+            visibility: hidden;
+            background: #666666;
         }
-    </style>
-    <style type="text/css">
-		@font-face{
-			font-family:'shin';
-			src:url('/font/G-OTF-GSHINMGOPRO-MEDIUM_0.OTF');
-		}
+
+        input#msgCancel {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            height: 50px;
+        }
+        input#msgSubmit {
+            position: absolute;
+            top: 10px;
+            right: 0;
+            height: 50px;
+        }
+        textarea#msgTextarea {
+            position: absolute;
+            width: 100%;
+            height: 100;
+            top: 200px;
+            left: 0;
+            outline: none;
+        }
+        /*div#dialog {
+        }*/
     </style>
 </head>
-<body bgcolor="#FFFFFF" onload="init();">
+<body bgcolor="#57bfa3"  onload="init('view');">
 
 <!-- <img src="img/yabitu.jpg" width="100%" height="100%"> -->
 
 <canvas id="myCanvas"></canvas>
 
-<!-- <script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script> -->
+
+<!-- <div id="dialog" title="Happy Wedding!!">
+    <textarea id="dialogText" placeholder="お祝いの言葉を入力してください" maxlength="80" style="width:100%;height:80px"></textarea>
+</div> -->
+
+<script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/lib/socket.io.js"></script>
 <script type="text/javascript" src="js/lib/easeljs.min.js"></script>
 <script type="text/javascript" src="js/lib/tweenjs.min.js"></script>
+<!-- <script type="text/javascript" src="js/RandomPointer.js"></script> -->
 <script type="text/javascript" src="js/MsgFukidashi.js"></script>
 <script type="text/javascript" src="js/PenBtn.js"></script>
 <script type="text/javascript" src="js/BalloonBtn.js"></script>
 <script type="text/javascript" src="js/Balloon.js"></script>
-<script type="text/javascript" src="js/view.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>

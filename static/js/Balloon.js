@@ -22,15 +22,23 @@ class Balloon extends createjs.Container {
             _this.x = Math.random()*window.innerWidth*(1/ratio);
             _this.y = 100+Math.random()*window.innerHeight*(1/ratio)-100;
 
-            var toY = _this.y - (50+Math.random()*200);
-            // var toY = 0;
+            // var toY = _this.y - (50+Math.random()*200);
+            var toY = 0;
 
+            //
             createjs.Tween.get(_this)
-            .to({y:toY, alpha:0}, 1500, createjs.Ease.quadIn)
+            .to({y:toY}, 1500, createjs.Ease.quadInOut)
             .call(onComp);
             function onComp() {
                 // 消す処理をする
-                stage.removeChild(_this);
+                // stage.removeChild(_this);
+                createjs.Tween.get(_this)
+                .to({alpha:0}, 10000)
+                .call(alphaComp);
+                function alphaComp() {
+                    // 消す処理をする
+                    stage.removeChild(_this);
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 var stage;
-var backBmp;
+// var backBmp;
 var base;
 var msgContainer;
 var balloonContainer;
@@ -8,29 +8,42 @@ var socket;
 var fukis = [];
 
 var ratio;
+const bgWidth = 960;
+const bgHeight = 1280;
 
 var penBtn;
 var balloonBtn;
 
-function init() {
+var randomPointer;
+
+var mode = "";
+
+function init(_mode) {
+	mode = _mode;
     stage = new createjs.Stage("myCanvas");
 
     // 画像のロード
-    var img = new Image();
-	img.onload = onImgLoad;
-	img.src = "../img/welcomeBoard.png";
+ //    var img = new Image();
+	// img.onload = onImgLoad;
+	// img.src = "../img/welcomeBoard.png";
 	// img.src = "../img/dummy.png";
+
+	onImgLoad();
 }
 
 function onImgLoad(e) {
+
+	if (createjs.Touch.isSupported()) {
+	 	createjs.Touch.enable(stage);
+	}
 	
 	// 
 	base = new createjs.Container();
 	stage.addChild(base);
 
 	// 画像をステージに追加
-	backBmp = new createjs.Bitmap(e.target);
-	base.addChild(backBmp);
+	// backBmp = new createjs.Bitmap(e.target);
+	// base.addChild(backBmp);
 
 	// 風船コンテナ
 	balloonContainer = new createjs.Container();
@@ -42,7 +55,10 @@ function onImgLoad(e) {
 
 	// uiコンテナ
 	uiContainer = new createjs.Container();
-	base.addChild(uiContainer);
+	if(mode != "view") {
+		base.addChild(uiContainer);
+	}
+	
 
 	// socket準備
 	socket = io();
@@ -73,9 +89,10 @@ function onImgLoad(e) {
 
 	createjs.Ticker.addEventListener("tick", onEnterframe);
     function onEnterframe(e) {
-    	// if(Math.random() < 0.5) {
-    	// 	popFukidashi("aaaaaaaaaa");
+    	// if(Math.random() < 0.1) {
+    	// 	popFukidashi(randomStr(3, 50));
     	// }
+
         stage.update();
     }
 
@@ -91,46 +108,81 @@ function popFukidashi(msg) {
             type = "right";
         }
         var fuki = new MsgFukidashi(msg, type);
-        fukis.push(fuki);
         fuki.x = x;
         fuki.y = y;
         msgContainer.addChild(fuki);
         fuki.popup();
+        // 末尾に追加
+        fukis.push(fuki);
 
-        // if(fukis.length > 50) {
-        //     msgContainer.removeChild(fukis[0]);
-        //     fukis.shift();
-        // }
+        // 古いけらば古いほど吹き出しにアルファをかける
+        var overNum = fukis.length - 20;
+        if(overNum > 0) {
+
+	        for(var i=0; i<overNum; i++) {
+	        	if(i < fukis.length-1) {
+	        		fukis[i].alpha = i / 20;
+	        	}
+	        	else {
+	        		break;
+	        	}
+	        }
+    	}
+        if(fukis.length > 50) {
+        	// 先頭の一番古い吹き出しを消す
+            msgContainer.removeChild(fukis[0]);
+            fukis.shift();
+        }
 
 		// var t = createMsg(data.m, Math.random()*window.innerWidth, Math.random()*window.innerHeight);
 		// msgContainer.addChild(t);
 	}
 }
 
+
+
 // var face = new createjs.Shape();
 function getMsgPos(fuki) {
-	var ratioW = stage.canvas.width / backBmp.image.width;
-	var avoidArea = {x:0, y:280*ratio, w:650*ratioW, h:360*ratio};
+	var ratioW = stage.canvas.width / bgWidth;
+
+	const margUp = 50;
+
+	var avoid1 = {right:350*ratioW, y1:350*ratio, h1:330*ratio, h2:120*ratio};
+	avoid1.y2 = stage.canvas.height - avoid1.h2;
+	var avoid2 = {left:avoid1.right, right:730*ratioW, y1:280*ratio, h1:370*ratio, h2:120*ratio};
+	avoid2.y2 = stage.canvas.height - avoid2.h2;
 
 	// face.graphics.clear();
-	// face.graphics.beginFill("red");
-	// face.graphics.drawRect(avoidArea.x, avoidArea.y, avoidArea.w, avoidArea.h);
+	// face.graphics.beginStroke("red");
+	// face.graphics.drawRect(0, avoid1.y1, avoid1.right, avoid1.h1);
+	// face.graphics.drawRect(0, avoid1.y2, avoid1.right, avoid1.h2);
+	// face.graphics.drawRect(avoid2.left, avoid2.y1, avoid2.right-avoid2.left, avoid2.h1);
+	// face.graphics.drawRect(avoid2.left, avoid2.y2, avoid2.right-avoid2.left, avoid2.h2);
 	// stage.addChild(face);
 
 	var rx = Math.random()*stage.canvas.width;
-	var ry;
-	if(rx < avoidArea.w) {
-		ry = Math.random()*stage.canvas.height - avoidArea.h;
-		if(ry > avoidArea.y) {
-			ry += avoidArea.h;
+	var ry = 0;
+
+	if(rx < avoid1.right) {
+		ry = margUp+Math.random()*(stage.canvas.height-margUp - avoid1.h1-avoid1.h2);
+		if(avoid1.y1 < ry) {
+			ry += avoid1.h1;
+		}
+	}
+	else if(rx < avoid2.right) {
+		ry = margUp+Math.random()*(stage.canvas.height-margUp - avoid2.h1-avoid2.h2);
+		if(avoid2.y1 < ry) {
+			ry += avoid2.h1;
 		}
 	}
 	else {
-		ry = Math.random()*stage.canvas.height;
+		ry = margUp+Math.random()*(stage.canvas.height-margUp);
 	}
+	
 
 	return {x:rx * (1/ratio), y:ry * (1/ratio)};
 }
+
 
 // リサイズ処理
 function onResize(e) {
@@ -143,30 +195,30 @@ function onResize(e) {
 
 	// 背景画像の高さに合わせる
 	// 最悪，画像の横が見えちゃう
-	ratio = h / backBmp.image.height;
+	ratio = h / bgHeight;
 
 	if(base) {
 		base.scaleX = ratio;
 		base.scaleY = ratio;
 	}
 
-	if(backBmp) {
-		backBmp.regX = backBmp.image.width/2;
-		// backBmp.regY = backBmp.image.height/2;
-		backBmp.x = w * (1/ratio)/2;
-		backBmp.y = 0;//h/2;
-		// backBmp.scaleX = ratio;
-		// backBmp.scaleY = ratio;
-		
-	}
+
+	// if(backBmp) {
+	// 	backBmp.regX = backBmp.image.width/2;
+	// 	// backBmp.regY = backBmp.image.height/2;
+	// 	backBmp.x = w * (1/ratio)/2;
+	// 	backBmp.y = 0;//h/2;
+	// 	// backBmp.scaleX = ratio;
+	// 	// backBmp.scaleY = ratio;
+	// }
 
 	if(penBtn) {
-		penBtn.x = 50;
-		penBtn.y = h * (1/ratio) - 50;
+		penBtn.x = 70;
+		penBtn.y = h * (1/ratio) - 70;
 	}
 	if(balloonBtn) {
-		balloonBtn.x = 150;
-		balloonBtn.y = h * (1/ratio) - 50;
+		balloonBtn.x = 190;
+		balloonBtn.y = h * (1/ratio) - 70;
 	}
 	// 画面更新する
 	stage.update();

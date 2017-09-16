@@ -38,7 +38,11 @@ io.on('connection', function(client){
 	// console.log("logFile : ");
 	// console.log(logFile);
 	var msgs = logFile.split("\n");
-	for(var i=0; i<msgs.length; i++) {
+	var len = msgs.length;
+	if(len > 50) {
+		len = 50;
+	}
+	for(var i=0; i<len; i++) {
 		// io.emit("mess", {m:msgs[i]});
 		resMsg(msgs[i], false, client);
 	}
@@ -99,6 +103,9 @@ function resBal(type, logFlg) {
 	// 		}
 	// 	});
 	// }
+
+	balloonTotalNum++;
+	console.log("balloon total = "+balloonTotalNum);
 }
 
 
