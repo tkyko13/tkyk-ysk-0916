@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+	<title>viewer</title>
+	<!-- <style> body {padding: 0; margin: 0;} </style> -->
+	<style>
+        canvas#myCanvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /*width: 100%;
+            height: 100%;*/
+        }
+
+    </style>
+    <!-- <link rel="stylesheet" type="text/css" href="css/tooltip-bloated.css" /> -->
+</head>
+<body bgcolor="#FFFFFF" onload="init();">
+
+<!-- <img src="img/yabitu.jpg" width="100%" height="100%"> -->
+
+
+<!-- <button class="tooltip">
+<span class="tooltip-content">a</span>
+</button> -->
+
+<canvas id="myCanvas"></canvas>
+
+
+                        
+
+<!-- <script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script> -->
+<script type="text/javascript" src="js/lib/easeljs.min.js"></script>
+<script type="text/javascript" src="js/lib/tweenjs.min.js"></script>
+<script type="text/javascript" src="js/MsgFukidashi.js"></script>
+<script type="text/javascript">
+
+function init() {
+
+    var stage = new createjs.Stage("myCanvas");
+
+    // リサイズイベント
+    window.addEventListener("resize", onResize);
+    onResize();
+    function onResize(e) {
+        // 画面幅・高さを取得
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        // Canvas要素の大きさを画面幅・高さに合わせる
+        stage.canvas.width = w;
+        stage.canvas.height = h;
+        // 画面更新する
+        // stage.update();
+    }
+
+
+
+
+    // var shape = new createjs.Shape();
+    // g = shape.graphics.beginFill("#FFFFFF")
+    // .beginStroke("#000000")
+    // //.setStrokeStyle(2, 1, 1);
+    // .drawRoundRect(0, 0, 70, 50, 10);
+    // shape.x = 100;
+    // shape.y = 100;
+    // stage.addChild(shape);
+    // createjs.Tween.get(g.command)
+    // .to({w:100}, 1000)
+    // .call(tweening);
+    // function tweening() {
+    // }
+
+    var fukis = [];
+
+    createjs.Ticker.addEventListener("tick", onEnterframe);
+    function onEnterframe(e) {
+        
+
+
+        stage.update();
+
+        // if(fukis.length > 0) {
+        //     if(Math.random() < 0.1) {
+        //         var ind = Math.floor(Math.random()*fukis.length);
+                
+        //         fukis[ind].animSummary();
+        //     }
+        // }
+
+        if(Math.random() < 0.1) {
+            var x = Math.random() * stage.canvas.width;
+            var y = Math.random() * stage.canvas.height;
+            var type = "left";
+            if(x > stage.canvas.width/2) {
+                type = "right";
+            }
+            var fuki = new MsgFukidashi("おめでー", type);
+            fukis.push(fuki);
+            fuki.x = x;
+            fuki.y = y;
+            stage.addChild(fuki);
+            fuki.popup();
+
+            if(fukis.length > 50) {
+                stage.removeChild(fukis[0]);
+                fukis.shift();
+            }
+        }
+    }
+
+    
+
+    this.addEventListener("click", onClick);
+    function onClick(e) {
+        // console.log(e.target);
+        var fuki = new MsgFukidashi("おめでー", "left");
+        fukis.push(fuki);
+        stage.addChild(fuki);
+        fuki.x = stage.mouseX;
+        fuki.y = stage.mouseY;
+    }
+
+    
+}
+
+
+</script>
+</body>
+</html>

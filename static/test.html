@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+	<title>viewer</title>
+	<!-- <style> body {padding: 0; margin: 0;} </style> -->
+	<style>
+        canvas#myCanvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /*width: 100%;
+            height: 100%;*/
+        }
+
+    </style>
+</head>
+<body bgcolor="#FFFFFF" onload="init();">
+
+<!-- <img src="img/yabitu.jpg" width="100%" height="100%"> -->
+
+<canvas id="myCanvas"></canvas>
+
+
+<!-- <script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script> -->
+<script type="text/javascript" src="js/lib/createjs.min.js"></script>
+<script type="text/javascript" src="js/lib/tweenjs.min.js"></script>
+<script type="text/javascript">
+
+function init() {
+    var stage = new createjs.Stage("myCanvas");
+
+    // リサイズイベント
+    window.addEventListener("resize", onResize);
+    onResize();
+    function onResize(e) {
+        // 画面幅・高さを取得
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        // Canvas要素の大きさを画面幅・高さに合わせる
+        stage.canvas.width = w;
+        stage.canvas.height = h;
+        // 画面更新する
+        // stage.update();
+    }
+
+    // var shape = new createjs.Shape();
+    // shape.graphics.beginFill("DarkRed");
+    // shape.graphics.drawCircle(0, 0, 40);
+    // stage.addChild(shape);
+
+    var fukis = [];
+
+    createjs.Ticker.addEventListener("tick", onEnterframe);
+    function onEnterframe(e) {
+        
+        stage.update();
+
+        // if(fukis.length > 0) {
+        //     if(Math.random() < 0.1) {
+        //         var ind = Math.floor(Math.random()*fukis.length);
+                
+        //         fukis[ind].animSummary();
+        //     }
+        // }
+    }
+
+    
+
+    this.addEventListener("click", onClick);
+    function onClick(e) {
+        // console.log(e.target);
+        var fuki = new MsgFukidashi();
+        fukis.push(fuki);
+        stage.addChild(fuki);
+        fuki.x = stage.mouseX;
+        fuki.y = stage.mouseY;
+    }
+
+    
+}
+
+function MsgFukidashi() {
+    this.Container_constructor();
+
+    // 吹き出しグラフィックスと文字のマージン
+    const hMarg = 20;
+    const vMarg = 20;
+
+    // サマリー表示の文字数
+    const summaryLen = 20;
+    // 全表示の改行までの文字数
+    const allWarapLen = 50;
+    // 全表示の時間,ミリ秒
+    // const allViewTime = 3000;
+
+    var msg = randomStr(1, 100);
+    var type = "LEFT";// or RIGHT
+    var summary = false;
+
+    // プライベートプロパティ
+    var msgText = new createjs.Text("");
+    var shape = new createjs.Shape();
+
+    // msgText.lineWidth = 100;
+    // msgText.textAlign = "center";
+    // msgText.textBaseline = "middle";
+    msgText.text = breakLines(msg, allWarapLen);
+    var tBox = msgText.getBounds();
+
+    // var shape = new createjs.Shape();
+    shape = new createjs.Shape();
+    shape.graphics.beginFill("#FFFFFF");
+    shape.graphics.beginStroke("#000000");
+    // shape.graphics.drawRoundRect(-tBox.width/2, -tBox.height/2, tBox.width, tBox.height, 5);
+    shape.graphics.drawRoundRect(tBox.width - hMarg/2, -tBox.height/2 - vMarg/2, tBox.width + hMarg, tBox.height + vMarg, 7);
+    shape.x = -tBox.width;
+    shape.y = tBox.height/2;
+    this.addChild(shape);
+
+    this.addChild(msgText);
+
+    this.mouseChildren = false;
+
+    shape.scaleX = 0;
+    shape.scaleY = 0;
+    // this.skewX = 100;
+    // this.skewY = 100;
+    this.animPop();
+
+    MsgFukidashi.prototype.animPop = function() {
+        console.log(shape);
+        createjs.Tween.get(this.shape)
+        .to({scaleX:1, scaleY:1}, 1000, createjs.Ease.bounceOut)
+        .call(handleComplete);
+        function handleComplete() {
+            createjs.Tween.get(this.shape)
+            .wait(3000)
+            .to({scaleX:0.5, scaleY:0.5}, 1000, createjs.Ease.bounceOut)
+            .call(handleComplete);
+            function handleComplete() {
+                
+            }
+        }
+    }
+
+    MsgFukidashi.prototype.animPopOld = function() {
+        createjs.Tween.get(this)
+        .to({alpha:1, scaleX:1, scaleY:1}, 1000, createjs.Ease.bounceOut)
+        .call(handleComplete);
+        function handleComplete() {
+            createjs.Tween.get(this)
+            .wait(3000)
+            .to({alpha:1, scaleX:0.5, scaleY:0.5}, 1000, createjs.Ease.bounceOut)
+            .call(handleComplete);
+            function handleComplete() {
+                
+            }
+        }
+    }
+}
+
+createjs.extend(MsgFukidashi, createjs.Container);
+
+
+// MsgFukidashi.prototype.animAll = function() {
+//     summary = false;
+//     createjs.Tween.get(this)
+//     .to({alpha:1, scaleX:1, scaleY:1}, 600, createjs.Ease.bounceOut)
+//     .call(handleComplete);
+//     function handleComplete() {
+//         // summary = false;
+//     }
+// };
+
+// MsgFukidashi.prototype.animSummary = function() {
+//     summary = true;
+//     createjs.Tween.get(this)
+//     .to({alpha:1, scaleX:0.5, scaleY:0.5}, 600, createjs.Ease.bounceOut)
+//     .call(handleComplete);
+//     function handleComplete() {
+        
+//     }
+// }
+
+
+function randomStr(min=0, max=1) {
+    // 生成する文字列の長さ
+    var l = min + Math.random() * (max-min);
+
+    // 生成する文字列に含める文字セット
+    var c = "abcdefghijklmnopqrstuvwxyz0123456789あいうえおかきくきこ";
+
+    var cl = c.length;
+    var r = "";
+    for(var i=0; i<l; i++){
+      r += c[Math.floor(Math.random()*cl)];
+    }
+    return r;
+}
+
+function breakLines(_str, chars) {
+    var result_str = "";
+    var myPattern = /\r|\n|\r\n/g;
+    var str_array = _str.split(myPattern);
+    var count = str_array.length;
+    for (i = 0; i < count; i++) {
+        str_array[i] =breakSingleLine( str_array[i], chars);
+    }
+    return str_array.join("\r");
+}
+function breakSingleLine(_str, chars) {
+    var lines_str = "";
+    var begin = 0;
+    var end = _str.length;
+    var doIt = true;
+    while (doIt) {
+        var last = begin + chars - 1;
+        if (last <= end) {
+            var nextChar = _str.charAt(last + 1);
+        if (nextChar == "。" || nextChar == "、") {
+            last--;
+        }
+        lines_str += _str.substring(begin, last + 1) + "\r";
+        begin = last + 1;
+        } else {
+            lines_str += _str.substring(begin, end + 1);
+            doIt = false;
+        }
+    }
+    return lines_str;
+}
+
+createjs.promote(MsgFukidashi, "Container");
+
+
+</script>
+</body>
+</html>

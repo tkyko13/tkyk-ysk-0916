@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+	<title>viewer</title>
+	<!-- <style> body {padding: 0; margin: 0;} </style> -->
+	<style>
+        canvas#myCanvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /*width: 100%;
+            height: 100%;*/
+        }
+
+    </style>
+    <!-- <link rel="stylesheet" type="text/css" href="css/tooltip-bloated.css" /> -->
+</head>
+<body bgcolor="#666666" onload="init();">
+
+<!-- <img src="img/yabitu.jpg" width="100%" height="100%"> -->
+
+
+<!-- <button class="tooltip">
+<span class="tooltip-content">a</span>
+</button> -->
+
+<canvas id="myCanvas"></canvas>
+
+
+                        
+
+<!-- <script type="text/javascript" src="js/lib/jquery-3.2.1.min.js"></script> -->
+<script type="text/javascript" src="js/lib/easeljs.min.js"></script>
+<script type="text/javascript" src="js/lib/tweenjs.min.js"></script>
+<script type="text/javascript" src="js/lib/socket.io.js"></script>
+<script type="text/javascript" src="js/PenBtn.js"></script>
+<script type="text/javascript" src="js/BalloonBtn.js"></script>
+<script type="text/javascript" src="js/Balloon.js"></script>
+<script type="text/javascript">
+
+var stage;
+var socket;
+
+function init() {
+    socket = io();
+
+    stage = new createjs.Stage("myCanvas");
+
+    // リサイズイベント
+    window.addEventListener("resize", onResize);
+    onResize();
+    function onResize(e) {
+        // 画面幅・高さを取得
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        // Canvas要素の大きさを画面幅・高さに合わせる
+        stage.canvas.width = w;
+        stage.canvas.height = h;
+        // 画面更新する
+        // stage.update();
+    }
+
+    var pb = new PenBtn(socket);
+    stage.addChild(pb);
+
+    var bb = new BalloonBtn(socket);
+    stage.addChild(bb);
+
+    socket.on('balloon', function(data) {
+        var b = new Balloon(data.t, stage);
+        stage.addChild(b);
+    });
+
+
+    createjs.Ticker.addEventListener("tick", onEnterframe);
+    function onEnterframe(e) {
+        stage.update();
+    }
+}
+
+
+// class PenBtn extends createjs.Container {
+//     constructor(socket) {
+//         super();
+
+//         this.x = 100;
+//         this.y = 100;
+
+//         // var callback = null;
+
+//         var bitmap = new createjs.Bitmap("img/btn_pen.png");
+//         bitmap.x = -bitmap.image.width/2;
+//         bitmap.y = -bitmap.image.height/2;
+//         this.addChild(bitmap);
+
+//         this.addEventListener("click", onClick);
+//         function onClick(e) {
+//             var input = window.prompt("入力してください", "初期入力文字");
+
+//             // if(callback !=null) {
+//             //     callback(input);
+//             // }
+//             if(input) {
+//                socket.emit('mess', {m:input});
+//             }
+//         }
+//     }
+// }
+
+// class BalloonBtn extends createjs.Container {
+//     constructor(socket) {
+//         super();
+
+//         this.x = 200;
+//         this.y = 100;
+
+//         var bitmap = new createjs.Bitmap("img/btn_balloon.png");
+//         bitmap.x = -bitmap.image.width/2;
+//         bitmap.y = -bitmap.image.height/2;
+//         this.addChild(bitmap);
+
+//         this.addEventListener("click", onClick);
+//         function onClick(e) {
+//             var type = Math.floor(1+Math.random()*5);
+//             socket.emit('balloon', {t:type});
+//         }
+//     }
+// }
+
+// class Balloon extends createjs.Container {
+//     constructor(type, stage) {
+//         super();
+
+//         var _this = this;
+
+//         var imgNames = ["balloon_01.png", "balloon_02.png", "balloon_03.png", "balloon_04.png", "balloon_05.png"];
+        
+//         var ind = type-1;//Math.floor(Math.random()*path.length-1);
+//         var path = "img/" + imgNames[ind];
+
+//         var bitmap = new createjs.Bitmap(path);
+//         this.addChild(bitmap);
+
+//         bitmap.x = bitmap.image.width / 2;
+//         var scale = 0.8 + Math.random()*0.2;
+//         bitmap.scaleX = scale;
+//         bitmap.scaleY = scale;
+
+//         this.x = Math.random()*window.innerWidth;
+//         this.y = 100+Math.random()*window.innerHeight-100;
+
+//         var toY = this.y - (50+Math.random()*200);
+
+//         createjs.Tween.get(this)
+//         .to({y:toY, alpha:0}, 800, createjs.Ease.quadIn)
+//         .call(onComp);
+//         function onComp() {
+//             // 消す処理をする
+//             stage.removeChild(_this);
+//         }
+//     }
+// }
+
+
+</script>
+</body>
+</html>
